@@ -105,11 +105,11 @@ var lightlyui = function(custom_config) {
 	 * Lightly customizations
 	 */
 	function animateNavigate(page_id, vars) {
-		var newpage = app.newPageElement(page_id, vars);
+		var el = app.newPageElement(page_id, vars);
+		var newpage = el.getElementsByClassName('lui-page')[0];
 		var oldpage = document.getElementsByClassName('lui-page')[0];
 
 		addClass(newpage, 'lui-notransition');
-		addClass(newpage, 'lui-page');
 		addClass(newpage, 'lui-page-new');
 		container.appendChild(newpage);
 		removeClass(newpage, 'lui-notransition');
@@ -124,7 +124,8 @@ var lightlyui = function(custom_config) {
 		},20);
 	}
 	function animateNavigateBack(page_id, vars) {
-		var oldpage = app.newPageElement(page_id, vars);
+		var el = app.newPageElement(page_id, vars);
+		var oldpage = el.getElementsByClassName('lui-page')[0];
 		var newpage = document.getElementsByClassName('lui-page')[0];
 
 		addClass(oldpage, 'lui-notransition');
@@ -176,6 +177,10 @@ var lightlyui = function(custom_config) {
 
 	}
 	function customExecuteAction(action_id) {
+
+		if (container.getElementsByClassName('lui-page').length > 1)
+			return false;
+
 		switch(action_id) {
 			case 'back':
 				customBack();
