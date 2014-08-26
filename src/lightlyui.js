@@ -5,7 +5,16 @@
  * License: Licensed under The MIT License. See LICENSE file
  */
 
-var lightlyui = function(config) {
+var lightlyui = function(custom_config) {
+
+	//read configuration
+	custom_config = custom_config || {};
+	var config = {
+		touch: custom_config.touch || true,
+		action_class: custom_config.action_class || 'lui-action',
+	}
+
+	var container = document.body;
 
 	//check lightly dependency
 	if (typeof window.lightly == "undefined") {
@@ -15,17 +24,27 @@ var lightlyui = function(config) {
 		}
 	}
 
+	//check hammer dependency
+	if (config.touch) {
+		if (typeof window.Hammer == "undefined")
+			throw {
+				name: "lightlyui-dependency-missing",
+				message: "Hammer.js not found, be sure to include it before lightlyui or config touch as false"
+			}
+
+		hammer = new Hammer(container);
+	}
+
+
 	//initialize lightly
 	var app = lightly();
-
-	var container = document.body;
 
 	//define private variables
 	var timer_loading;
 
 	//cache elements references
 	var elements = {
-		"loading": document.getElementById("lightlyui-loading")
+		"loading": document.getElementById("lui-loading")
 	}
 
 	//set built-in actions
@@ -40,6 +59,8 @@ var lightlyui = function(config) {
 		history: true
 	});
 
+	//set listeners
+	addEventListeners();
 
 	/**
 	 * Loader functions
@@ -69,16 +90,16 @@ var lightlyui = function(config) {
 	 */
 	function animateNavigate(page_id, vars) {
 		var newpage = app.newPageElement(page_id, vars);
-		var oldpage = document.getElementsByClassName('lightlyui-page')[0];
+		var oldpage = document.getElementsByClassName('lui-page')[0];
 
-		addClass(newpage, 'lightlyui-notransition');
-		addClass(newpage, 'lightlyui-page');
-		addClass(newpage, 'lightlyui-page-new');
+		addClass(newpage, 'lui-notransition');
+		addClass(newpage, 'lui-page');
+		addClass(newpage, 'lui-page-new');
 		container.appendChild(newpage);
-		removeClass(newpage, 'lightlyui-notransition');
+		removeClass(newpage, 'lui-notransition');
 		setTimeout( function() {
-			removeClass(newpage, 'lightlyui-page-new');
-			addClass(oldpage, 'lightlyui-page-old');
+			removeClass(newpage, 'lui-page-new');
+			addClass(oldpage, 'lui-page-old');
 
 			var duration = getTransitionDuration(oldpage);
 			timer_pagination = setTimeout( function() {
@@ -88,16 +109,16 @@ var lightlyui = function(config) {
 	}
 	function animateNavigateBack(page_id, vars) {
 		var oldpage = app.newPageElement(page_id, vars);
-		var newpage = document.getElementsByClassName('lightlyui-page')[0];
+		var newpage = document.getElementsByClassName('lui-page')[0];
 
-		addClass(oldpage, 'lightlyui-notransition');
-		addClass(oldpage, 'lightlyui-page');
-		addClass(oldpage, 'lightlyui-page-old');
+		addClass(oldpage, 'lui-notransition');
+		addClass(oldpage, 'lui-page');
+		addClass(oldpage, 'lui-page-old');
 		container.appendChild(oldpage);
-		removeClass(oldpage, 'lightlyui-notransition');
+		removeClass(oldpage, 'lui-notransition');
 		setTimeout( function() {
-			removeClass(oldpage, 'lightlyui-page-old');
-			addClass(newpage, 'lightlyui-page-new');
+			removeClass(oldpage, 'lui-page-old');
+			addClass(newpage, 'lui-page-new');
 
 			var duration = getTransitionDuration(newpage);
 			timer_pagination = setTimeout( function() {
@@ -109,7 +130,7 @@ var lightlyui = function(config) {
 	function customAddAction(action) {
 		if (action.id == "animatenavigate" || action.id == "animatenavigateback")
 			throw {
-				name: "lightlyui-action-forbidden",
+				name: "lui-action-forbidden",
 				message: "Cannot overwrite built-in actions"
 			}
 		app.addAction(action); 
@@ -150,6 +171,35 @@ var lightlyui = function(config) {
 		}
 	}
 
+	/*
+	 * Event listeners
+	 */
+	function addEventListeners() {
+
+		//lui-action
+		if (config.touch) {
+			hammer.on('tap', function(evt) {
+				var el = evt.target;
+				if ( hasClass(el, config.action_class) ) {
+					evt.preventDefault();
+					onClickActionClass(evt);
+				}
+			});
+		} else {
+			container.addEventListener( 'click', function(evt) {
+				var el = evt.target;
+				if ( hasClass(el, config.action_class) ) {
+					evt.preventDefault();
+					evt.stopPropagation();
+					onClickActionClass(evt);
+				}
+			});
+		}
+
+	}
+	function onClickActionClass(evt) {
+		console.log('aaa');
+	}
 
 
 	/**
@@ -182,6 +232,9 @@ var lightlyui = function(config) {
 		removeClass(elem, newclass);
 		elem.className = elem.className +" "+newclass;
 	}
+	function hasClass(elem, checkclass) {
+		    return new RegExp('(\\s|^)' + checkclass + '(\\s|$)').test(elem.className);
+	}
 	function getTransitionDuration(el, with_delay) {
 		var style=window.getComputedStyle(el),
 		    duration = style.webkitTransitionDuration,
@@ -198,6 +251,7 @@ var lightlyui = function(config) {
 	//expose methods
 
 	return {
+		getConfig: function() { return config; },
 		addAction: customAddAction,
 		addPage: app.addPage,
 		showLoader: showLoader,

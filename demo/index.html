@@ -10,7 +10,7 @@
 </head>
 <body>
 
-	<div id="lightlyui-loading" class="hidden">
+	<div id="lui-loading" class="hidden">
 		<div class="overlay">
 		</div>
 		<div class="loader">
@@ -18,16 +18,17 @@
 		</div>
 	</div>
 
-	<div id="lightlyui-dialog">
+	<div id="lui-dialog" class="hidden">
 	</div>
 
-	<div id="lightlyui-panel"></div>
+	<div id="lui-panel" class="hidden"></div>
 
-	<div class="lightlyui-page">
+	<div class="lui-page">
 		<div class="main-header">
 			This is the header
 		</div>
 		<div class="main-content">
+			<a href="#" class="lui-action" lui-action="animatenavigate" lui-data="">AAA</a>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -61,6 +62,7 @@
 	<!--<div id="lightlyui-page-old"></div>-->
 
     <script type="text/javascript" src="dep/lightly.js"></script>
+    <script type="text/javascript" src="dep/hammer.min.js"></script>
     <script type="text/javascript" src="../src/lightlyui.js"></script>
     <script type="text/javascript" src="demo.js"></script>
 </body>
