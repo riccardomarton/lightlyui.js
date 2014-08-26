@@ -6,6 +6,11 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
+}
+
+.lightlyui-notransition {
+	transition-duration: 0 !important;
 }
 
 #lightlyui-loading {
@@ -57,7 +62,7 @@ body {
 	display: none;
 }
 
-#lightlyui-page {
+.lightlyui-page {
 	position: absolute;
 	top: 0;
 	left: 0;

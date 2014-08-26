@@ -1,5 +1,5 @@
 /**
- * Version: 0.3
+ * Version: 0.5
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -70,24 +70,23 @@ var lightly = function() {
 	/*
 	 * Load and display a page
 	 */
-	function navigate(page_id, vars, back) {
-		//main function, rebuilds DOM
-
+	function newPageElement(page_id, vars) {
 		if (typeof pages[page_id] == "undefined")
 			throw {
 				name: "lightly-page-nonexistant",
 				message: "Page "+page_id+" does not exist"
 			}
 
-		var back = back ? true : false;
-
 		var page = pages[page_id];
 
 		document.title = page.title;
 
+		var div = document.createElement('div');
+		div.innerHTML = container.innerHTML;
+
 		for (id in page.contents) {
 
-			var elem = document.getElementById(id);
+			var elem = div.getElementsByClassName(id)[0];
 			if (elem == null)
 				continue;
 
@@ -103,6 +102,20 @@ var lightly = function() {
 			page.callback(vars);
 
 		triggerEvent(container, "lightly-page-load", {page: page});
+
+		return div;
+	}
+
+	function navigate(page_id, vars) {
+		//main function, rebuilds DOM
+
+		div = newPageElement(page_id, vars);
+
+		container.innerHTML = div.innerHTML;
+
+		var page = pages[page_id];
+
+		triggerEvent(container, "lightly-page-shown", {page: page});
 
 	}
 
@@ -251,6 +264,7 @@ var lightly = function() {
 			return pages;
 		},
 		navigate: navigate,
+		newPageElement: newPageElement,
 
 		/*
 		 * Actions management

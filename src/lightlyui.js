@@ -5,7 +5,7 @@
  * License: Licensed under The MIT License. See LICENSE file
  */
 
-var lightlyui = function() {
+var lightlyui = function(config) {
 
 	//check lightly dependency
 	if (typeof window.lightly == "undefined") {
@@ -48,8 +48,87 @@ var lightlyui = function() {
 	}
 
 	/**
+	 * Lightly customizations
+	 */
+	function customNavigate(page_id, vars) {
+		var newpage = app.newPageElement(page_id, vars);
+		var oldpage = document.getElementsByClassName('lightlyui-page')[0];
+
+		addClass(newpage, 'lightlyui-notransition');
+		addClass(newpage, 'lightlyui-page');
+		addClass(newpage, 'lightlyui-page-new');
+		document.body.appendChild(newpage);
+		removeClass(newpage, 'lightlyui-notransition');
+		setTimeout( function() {
+			removeClass(newpage, 'lightlyui-page-new');
+			addClass(oldpage, 'lightlyui-page-old');
+
+			var duration = getTransitionDuration(oldpage);
+			timer_pagination = setTimeout( function() {
+				document.body.removeChild(oldpage);
+			}, duration );
+		},20);
+	}
+	function customNavigateBack(page_id, vars) {
+		var oldpage = app.newPageElement(page_id, vars);
+		var newpage = document.getElementsByClassName('lightlyui-page')[0];
+
+		addClass(oldpage, 'lightlyui-notransition');
+		addClass(oldpage, 'lightlyui-page');
+		addClass(oldpage, 'lightlyui-page-old');
+		document.body.appendChild(oldpage);
+		removeClass(oldpage, 'lightlyui-notransition');
+		setTimeout( function() {
+			removeClass(oldpage, 'lightlyui-page-old');
+			addClass(newpage, 'lightlyui-page-new');
+
+			var duration = getTransitionDuration(newpage);
+			timer_pagination = setTimeout( function() {
+				document.body.removeChild(newpage);
+			}, duration );
+		},20);
+	}
+	function customBack() {
+		
+	}
+
+	function customAddAction(action) {
+		if (action.id == "lightlyui-navigate" || action.id == "lightlyui-back")
+			throw {
+				name: "lightlyui-action-forbidden",
+				message: "Cannot overwrite built-in actions"
+			}
+		app.addAction(action); 
+	}
+	function customExecuteAction() {
+
+	}
+
+
+
+	/**
 	 * Utilities functions
 	 */
+	function triggerEvent(element, eventname, vars) {
+		var event; // The custom event that will be created
+
+		if (document.createEvent) {
+			event = document.createEvent("HTMLEvents");
+			event.initEvent(eventname, true, true);
+		} else {
+			event = document.createEventObject();
+			event.eventType = eventname;
+		}
+
+		event.eventName = eventname;
+		event.vars = vars;
+
+		if (document.createEvent) {
+			element.dispatchEvent(event);
+		} else {
+			element.fireEvent("on" + event.eventType, event);
+		}
+	}
 	function removeClass(elem, rmclass) {
 		elem.className=elem.className.replace(rmclass ,"");
 	}
@@ -71,9 +150,14 @@ var lightlyui = function() {
 
 
 	//expose methods
-	app.showLoader = showLoader;
-	app.hideLoader = hideLoader;
 
-	return app;
+	return {
+		addAction: app.addAction,
+		addPage: app.addPage,
+		showLoader: showLoader,
+		hideLoader: hideLoader,
+		customNavigate: customNavigate,	//testing
+		customNavigateBack: customNavigateBack	//testing
+	};
 
 }

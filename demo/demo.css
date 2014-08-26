@@ -1,3 +1,8 @@
+body {
+	font-family: sans-serif;
+	color: #222222;
+}
+
 #lightlyui-loading {
 	opacity: 0;
 	transition: opacity 1s;
@@ -7,8 +12,28 @@
 	opacity: 1;
 }
 
+.lightlyui-page {
+	background-color: #efefef;
+	transition: all 1s;
+}
 
+.lightlyui-page-new {
+	left: 100%;
+}
+.lightlyui-page-old {
+	left: -50%;
+	-webkit-filter: brightness(0.5);
+	z-index: 90;
+}
 
-#lightlyui-page {
-	background-color: #ddd;
+.main-header {
+	position: fixed;
+	width: 100%;
+	height: 56px;
+	background-color: blue;
+	color: white;
+}
+
+.main-content {
+	padding-top: 56px;
 }
