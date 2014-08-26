@@ -1,0 +1,14 @@
+#lightlyui-loading {
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+#lightlyui-loading.show {
+	opacity: 1;
+}
+
+
+
+#lightlyui-page {
+	background-color: #ddd;
+}
