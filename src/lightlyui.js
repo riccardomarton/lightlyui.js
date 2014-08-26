@@ -18,6 +18,8 @@ var lightlyui = function(config) {
 	//initialize lightly
 	var app = lightly();
 
+	var container = document.body;
+
 	//define private variables
 	var timer_loading;
 
@@ -26,7 +28,22 @@ var lightlyui = function(config) {
 		"loading": document.getElementById("lightlyui-loading")
 	}
 
-	//manipulate layers
+	//set built-in actions
+	app.addAction({
+		id: 'animatenavigate',
+		callback: animateNavigate,
+		history: true
+	});
+	app.addAction({
+		id: 'animatenavigateback',
+		callback: animateNavigateBack,
+		history: true
+	});
+
+
+	/**
+	 * Loader functions
+	 */
 	function showLoader() {
 		if (typeof timer_loader != "undefined")
 			clearTimeout(timer_loader);
@@ -50,14 +67,14 @@ var lightlyui = function(config) {
 	/**
 	 * Lightly customizations
 	 */
-	function customNavigate(page_id, vars) {
+	function animateNavigate(page_id, vars) {
 		var newpage = app.newPageElement(page_id, vars);
 		var oldpage = document.getElementsByClassName('lightlyui-page')[0];
 
 		addClass(newpage, 'lightlyui-notransition');
 		addClass(newpage, 'lightlyui-page');
 		addClass(newpage, 'lightlyui-page-new');
-		document.body.appendChild(newpage);
+		container.appendChild(newpage);
 		removeClass(newpage, 'lightlyui-notransition');
 		setTimeout( function() {
 			removeClass(newpage, 'lightlyui-page-new');
@@ -65,18 +82,18 @@ var lightlyui = function(config) {
 
 			var duration = getTransitionDuration(oldpage);
 			timer_pagination = setTimeout( function() {
-				document.body.removeChild(oldpage);
+				container.removeChild(oldpage);
 			}, duration );
 		},20);
 	}
-	function customNavigateBack(page_id, vars) {
+	function animateNavigateBack(page_id, vars) {
 		var oldpage = app.newPageElement(page_id, vars);
 		var newpage = document.getElementsByClassName('lightlyui-page')[0];
 
 		addClass(oldpage, 'lightlyui-notransition');
 		addClass(oldpage, 'lightlyui-page');
 		addClass(oldpage, 'lightlyui-page-old');
-		document.body.appendChild(oldpage);
+		container.appendChild(oldpage);
 		removeClass(oldpage, 'lightlyui-notransition');
 		setTimeout( function() {
 			removeClass(oldpage, 'lightlyui-page-old');
@@ -84,24 +101,53 @@ var lightlyui = function(config) {
 
 			var duration = getTransitionDuration(newpage);
 			timer_pagination = setTimeout( function() {
-				document.body.removeChild(newpage);
+				container.removeChild(newpage);
 			}, duration );
 		},20);
 	}
-	function customBack() {
-		
-	}
 
 	function customAddAction(action) {
-		if (action.id == "lightlyui-navigate" || action.id == "lightlyui-back")
+		if (action.id == "animatenavigate" || action.id == "animatenavigateback")
 			throw {
 				name: "lightlyui-action-forbidden",
 				message: "Cannot overwrite built-in actions"
 			}
 		app.addAction(action); 
 	}
-	function customExecuteAction() {
+	function customBack() {
 
+		var history = app.getHistory();
+
+		if (history.length < 2)
+			return;
+
+		history.pop();
+
+		// var i = history.length - 1;
+
+		var action = history.pop();
+
+		var params = action.params.slice(0);
+
+		if (action.action_id == "animatenavigate")
+			action.action_id = "animatenavigateback";
+
+		params.unshift(action.action_id);
+		app.executeAction.apply(null, params);
+
+		triggerEvent(container, "lightly-action-back", {action: action});
+
+	}
+	function customExecuteAction(action_id) {
+		switch(action_id) {
+			case 'back':
+				customBack();
+				break;
+			default:
+				args = Array.prototype.slice.call(arguments,0);
+				app.executeAction.apply(null, args);
+				break;
+		}
 	}
 
 
@@ -136,7 +182,7 @@ var lightlyui = function(config) {
 		removeClass(elem, newclass);
 		elem.className = elem.className +" "+newclass;
 	}
-	function getTransitionDuration (el, with_delay){
+	function getTransitionDuration(el, with_delay) {
 		var style=window.getComputedStyle(el),
 		    duration = style.webkitTransitionDuration,
 		    delay = style.webkitTransitionDelay; 
@@ -152,12 +198,13 @@ var lightlyui = function(config) {
 	//expose methods
 
 	return {
-		addAction: app.addAction,
+		addAction: customAddAction,
 		addPage: app.addPage,
 		showLoader: showLoader,
 		hideLoader: hideLoader,
-		customNavigate: customNavigate,	//testing
-		customNavigateBack: customNavigateBack	//testing
+		getHistory: app.getHistory,
+		executeAction: customExecuteAction,
+		do: customExecuteAction
 	};
 
 }
