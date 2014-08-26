@@ -17,3 +17,4 @@ var page_test2 = {
 	}
 }
 app.addPage(page_test2);
+app.setHomePage('test1');

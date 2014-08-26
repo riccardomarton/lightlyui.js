@@ -49,12 +49,12 @@ var lightlyui = function(custom_config) {
 
 	//set built-in actions
 	app.addAction({
-		id: 'animatenavigate',
+		id: 'lui-navigate',
 		callback: animateNavigate,
 		history: true
 	});
 	app.addAction({
-		id: 'animatenavigateback',
+		id: 'lui-navigateback',
 		callback: animateNavigateBack,
 		history: true
 	});
@@ -83,6 +83,22 @@ var lightlyui = function(custom_config) {
 		timer_loader = setTimeout( function() {
 			addClass(elements.loading, 'hidden');
 		}, duration );
+	}
+
+	function setHomePage(page_id) {
+		var pages = app.getPages();
+		if (typeof pages[page_id] == "undefined")
+			throw {
+				name: "lightly-page-nonexistant",
+				message: "Page "+page_id+" does not exist"
+			}
+
+		var history = app.getHistory();
+		history.push({
+			action_id: "lui-navigateback",
+			params: [page_id]
+		});
+		app.navigate(page_id);
 	}
 
 	/**
@@ -128,7 +144,7 @@ var lightlyui = function(custom_config) {
 	}
 
 	function customAddAction(action) {
-		if (action.id == "animatenavigate" || action.id == "animatenavigateback")
+		if (action.id == "lui-navigate" || action.id == "lui-navigateback")
 			throw {
 				name: "lui-action-forbidden",
 				message: "Cannot overwrite built-in actions"
@@ -150,8 +166,8 @@ var lightlyui = function(custom_config) {
 
 		var params = action.params.slice(0);
 
-		if (action.action_id == "animatenavigate")
-			action.action_id = "animatenavigateback";
+		if (action.action_id == "lui-navigate")
+			action.action_id = "lui-navigateback";
 
 		params.unshift(action.action_id);
 		app.executeAction.apply(null, params);
@@ -198,7 +214,16 @@ var lightlyui = function(custom_config) {
 
 	}
 	function onClickActionClass(evt) {
-		console.log('aaa');
+		var el = evt.target;
+		var action_id = el.getAttribute('lui-action');
+		var raw_data = el.getAttribute('lui-data');
+		var action_data;
+		try {
+			action_data = JSON.parse(raw_data);
+		} catch (err) {
+			action_data = raw_data;
+		}
+		customExecuteAction(action_id, action_data);
 	}
 
 
@@ -254,6 +279,7 @@ var lightlyui = function(custom_config) {
 		getConfig: function() { return config; },
 		addAction: customAddAction,
 		addPage: app.addPage,
+		setHomePage: setHomePage,
 		showLoader: showLoader,
 		hideLoader: hideLoader,
 		getHistory: app.getHistory,
