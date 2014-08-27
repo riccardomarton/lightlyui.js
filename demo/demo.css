@@ -14,14 +14,14 @@ body {
 
 .lui-page {
 	background-color: #efefef;
-	transition: all 1s;
+	transition: all 0.5s;
 }
 
 .lui-page-new {
-	left: 100%;
+	-webkit-transform: translateX(100%);
 }
 .lui-page-old {
-	left: -50%;
+	-webkit-transform: translateX(-50%);
 	-webkit-filter: brightness(0.5);
 	z-index: 90;
 }

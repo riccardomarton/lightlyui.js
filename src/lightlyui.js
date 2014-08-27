@@ -99,6 +99,8 @@ var lightlyui = function(custom_config) {
 			params: [page_id]
 		});
 		app.navigate(page_id);
+		var page = document.getElementsByClassName('lui-page')[0];
+		triggerEvent(container, "lightlyui-page-shown", {page: page});
 	}
 
 	/**
@@ -112,6 +114,7 @@ var lightlyui = function(custom_config) {
 		addClass(newpage, 'lui-notransition');
 		addClass(newpage, 'lui-page-new');
 		container.appendChild(newpage);
+		triggerEvent(container, "lightlyui-page-shown", {page: newpage});
 		removeClass(newpage, 'lui-notransition');
 		setTimeout( function() {
 			removeClass(newpage, 'lui-page-new');
@@ -120,6 +123,7 @@ var lightlyui = function(custom_config) {
 			var duration = getTransitionDuration(oldpage);
 			timer_pagination = setTimeout( function() {
 				container.removeChild(oldpage);
+				triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
 			}, duration );
 		},20);
 	}
@@ -132,6 +136,7 @@ var lightlyui = function(custom_config) {
 		addClass(oldpage, 'lui-page');
 		addClass(oldpage, 'lui-page-old');
 		container.appendChild(oldpage);
+		triggerEvent(container, "lightlyui-page-shown", {page: oldpage});
 		removeClass(oldpage, 'lui-notransition');
 		setTimeout( function() {
 			removeClass(oldpage, 'lui-page-old');
@@ -140,6 +145,7 @@ var lightlyui = function(custom_config) {
 			var duration = getTransitionDuration(newpage);
 			timer_pagination = setTimeout( function() {
 				container.removeChild(newpage);
+				triggerEvent(container, "lightlyui-page-hidden", {page: newpage});
 			}, duration );
 		},20);
 	}
