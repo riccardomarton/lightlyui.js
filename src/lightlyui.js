@@ -1,5 +1,5 @@
 /**
- * Version: 0.1
+ * Version: 0.2
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -43,8 +43,8 @@ var lightlyui = function(custom_config) {
 	var timer_loading;
 
 	//cache elements references
-	var elements = {
-		"loading": document.getElementById("lui-loading")
+	var elements_id = {
+		"loader": "lui-loading"
 	}
 
 	//set built-in actions
@@ -69,19 +69,23 @@ var lightlyui = function(custom_config) {
 		if (typeof timer_loader != "undefined")
 			clearTimeout(timer_loader);
 
-		removeClass(elements.loading, 'hidden');
+		var loader = document.getElementById(elements_id.loader);
+
+		removeClass(loader, 'hidden');
 		timer_loader = setTimeout( function() {
-			addClass(elements.loading, 'show');
+			addClass(loader, 'show');
 		}, 20 );
 	}
 	function hideLoader() {
 		if (typeof timer_loader != "undefined")
 			clearTimeout(timer_loader);
 
-		var duration = getTransitionDuration(elements.loading);
-		removeClass(elements.loading, 'show');
+		var loader = document.getElementById(elements_id.loader);
+
+		var duration = getTransitionDuration(loader);
+		removeClass(loader, 'show');
 		timer_loader = setTimeout( function() {
-			addClass(elements.loading, 'hidden');
+			addClass(loader, 'hidden');
 		}, duration );
 	}
 
