@@ -207,13 +207,73 @@ var lightlyui = function(custom_config) {
 	 */
 	function addEventListeners() {
 
-		//lui-action
+		//better touch interaction
+		if (config.touch) {
+
+			hammer.on('tap', function(evt) {
+				var el = evt.target;
+
+				//blur input if touch away
+				if (!(['INPUT', 'TEXTAREA'].indexOf(el.nodeName) !== -1) &&
+					(['INPUT', 'TEXTAREA'].indexOf(document.activeElement.nodeName) !== -1)) {
+					document.activeElement.blur();
+				}
+
+
+				//chenge input clicking on label
+				if ( el.nodeName == 'LABEL' ) {
+					
+					var input_id = el.getAttribute('for');
+					if (input_id) {
+						var input = document.getElementById(input_id);
+						console.log(input);
+						if (input)
+							input.click();
+					} else {
+						var input = el.getElementsByTagName('INPUT');
+						if (input[0])
+							input[0].click();
+					}
+				}
+			});
+			
+			//add tapped style if touched
+			container.addEventListener( 'touchstart', function(evt) {
+
+				var el = evt.target;
+				while (el && el != container) {
+					if ( hasClass(el, config.action_class) ) {
+						addClass(el, 'lui-touched');
+						return;
+					}
+					else
+						el = el.parentNode;
+				}
+			});
+			container.addEventListener( 'touchend', function(evt) {
+				var el = evt.target;
+				while (el != container) {
+					if ( hasClass(el, config.action_class) ) {
+						removeClass(el, 'lui-touched');
+						return;
+					}
+					else
+						el = el.parentNode;
+				}
+			});
+		}
+
+		//lui-action_class
 		if (config.touch) {
 			hammer.on('tap', function(evt) {
 				var el = evt.target;
-				if ( hasClass(el, config.action_class) ) {
-					evt.preventDefault();
-					onClickActionClass(evt);
+				while (el != container) {
+					if ( hasClass(el, config.action_class) ) {
+						evt.preventDefault();
+						onClickActionClass(el);
+						return;
+					}
+					el = el.parentNode;
 				}
 			});
 		} else {
@@ -222,15 +282,15 @@ var lightlyui = function(custom_config) {
 				if ( hasClass(el, config.action_class) ) {
 					evt.preventDefault();
 					evt.stopPropagation();
-					onClickActionClass(evt);
+					onClickActionClass(el);
 				}
 			});
 		}
-
 	}
-	function onClickActionClass(evt) {
-		var el = evt.target;
+	function onClickActionClass(el) {
 		var action_id = el.getAttribute('lui-action');
+		if (!action_id)
+			return;
 		var raw_data = el.getAttribute('lui-data');
 		var action_data;
 		try {
@@ -267,6 +327,7 @@ var lightlyui = function(custom_config) {
 	}
 	function removeClass(elem, rmclass) {
 		elem.className=elem.className.replace(rmclass ,"");
+		elem.className=elem.className.replace("  " ," ");
 	}
 	function addClass(elem, newclass) {
 		removeClass(elem, newclass);
@@ -299,7 +360,12 @@ var lightlyui = function(custom_config) {
 		hideLoader: hideLoader,
 		getHistory: app.getHistory,
 		executeAction: customExecuteAction,
-		do: customExecuteAction
+		do: customExecuteAction,
+
+		hasClass: hasClass,
+		addClass: addClass,
+		removeClass: removeClass,
+		getTransitionDuration: getTransitionDuration
 	};
 
 }
