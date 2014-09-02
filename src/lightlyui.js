@@ -1,5 +1,5 @@
 /**
- * Version: 0.2
+ * Version: 0.3
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -40,11 +40,15 @@ var lightlyui = function(custom_config) {
 	var app = lightly();
 
 	//define private variables
-	var timer_loading;
+	var timer_loading,
+		timer_panel,
+		timer_dialog;
 
 	//cache elements references
 	var elements_id = {
-		"loader": "lui-loading"
+		"loader": 	"lui-loading",
+		"panel": 	"lui-panel",
+		"dialog":  	"lui-dialog"
 	}
 
 	//set built-in actions
@@ -56,6 +60,16 @@ var lightlyui = function(custom_config) {
 	app.addAction({
 		id: 'lui-navigateback',
 		callback: animateNavigateBack,
+		history: true
+	});
+	app.addAction({
+		id: 'lui-showpanel',
+		callback: showPanel,
+		history: true
+	});
+	app.addAction({
+		id: 'lui-hidepanel',
+		callback: hidePanel,
 		history: true
 	});
 
@@ -86,6 +100,65 @@ var lightlyui = function(custom_config) {
 		removeClass(loader, 'show');
 		timer_loader = setTimeout( function() {
 			addClass(loader, 'hidden');
+		}, duration );
+	}
+
+	/**
+	 * Panel functions
+	 */
+	function showPanel() {
+		if (typeof timer_panel != "undefined")
+			clearTimeout(timer_panel);
+
+		var panel = document.getElementById(elements_id.panel);
+
+		removeClass(panel, 'hidden');
+		timer_panel = setTimeout( function() {
+			addClass(panel, 'show');
+		}, 20 );
+	}
+	function hidePanel() {
+		if (typeof timer_panel != "undefined")
+			clearTimeout(timer_panel);
+
+		var panel = document.getElementById(elements_id.panel);
+
+		var duration = getTransitionDuration(panel);
+		removeClass(panel, 'show');
+		timer_panel = setTimeout( function() {
+			addClass(panel, 'hidden');
+		}, duration );
+	}
+
+	/**
+	 * Dialog functions
+	 */
+	function showDialog( html ) {
+		if (typeof timer_dialog != "undefined")
+			clearTimeout(timer_dialog);
+
+		var dialog = document.getElementById(elements_id.dialog);
+		var dialog_contents = dialog.getElementsByClassName('dialog')[0];
+		if (typeof html != "undefined")
+			dialog_contents.innerHTML = html;
+
+		removeClass(dialog, 'hidden');
+		timer_dialog = setTimeout( function() {
+			addClass(dialog, 'show');
+		}, 20 );
+	}
+	function hideDialog() {
+		if (typeof timer_dialog != "undefined")
+			clearTimeout(timer_dialog);
+
+		var dialog = document.getElementById(elements_id.dialog);
+		var dialog_contents = dialog.getElementsByClassName('dialog')[0];
+
+		var duration = getTransitionDuration(dialog);
+		removeClass(dialog, 'show');
+		timer_dialog = setTimeout( function() {
+			addClass(dialog, 'hidden');
+			dialog_contents.innerHTML = '';
 		}, duration );
 	}
 
@@ -358,6 +431,10 @@ var lightlyui = function(custom_config) {
 		setHomePage: setHomePage,
 		showLoader: showLoader,
 		hideLoader: hideLoader,
+		showPanel: showPanel,
+		hidePanel: hidePanel,
+		showDialog: showDialog,
+		hideDialog: hideDialog,
 		getHistory: app.getHistory,
 		executeAction: customExecuteAction,
 		do: customExecuteAction,

@@ -3,14 +3,37 @@ body {
 	color: #222222;
 }
 
-#lui-loading {
+#lui-loading,
+#lui-dialog {
 	opacity: 0;
 	transition: opacity 1s;
 }
 
-#lui-loading.show {
+#lui-loading.show,
+#lui-dialog.show {
 	opacity: 1;
 }
+
+#lui-panel {
+	transition: all 1s;
+}
+
+#lui-panel .overlay {
+	opacity: 0;
+	transition: inherit;
+}
+	#lui-panel.show .overlay {
+		opacity: 1;
+	}
+#lui-panel .panel {
+	transition: inherit;
+	trasnform: translate3D(-300px,0,0);
+	-webkit-transform: translate3D(-300px,0,0);
+}
+	#lui-panel.show .panel {
+		trasnform: translate3D(0,0,0);
+		-webkit-transform: translate3D(0,0,0);
+	}
 
 .lui-page {
 	background-color: #efefef;
