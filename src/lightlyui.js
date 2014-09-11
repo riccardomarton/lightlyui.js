@@ -1,5 +1,5 @@
 /**
- * Version: 0.3
+ * Version: 0.3.1
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -65,12 +65,12 @@ var lightlyui = function(custom_config) {
 	app.addAction({
 		id: 'lui-showpanel',
 		callback: showPanel,
-		history: true
+		history: false
 	});
 	app.addAction({
 		id: 'lui-hidepanel',
 		callback: hidePanel,
-		history: true
+		history: false
 	});
 
 	//set listeners
@@ -183,8 +183,8 @@ var lightlyui = function(custom_config) {
 	/**
 	 * Lightly customizations
 	 */
-	function animateNavigate(page_id, vars) {
-		var el = app.newPageElement(page_id, vars);
+	function animateNavigate(page_id) {
+		var el = app.newPageElement.apply(null, arguments);
 		var newpage = el.getElementsByClassName('lui-page')[0];
 		var oldpage = document.getElementsByClassName('lui-page')[0];
 
@@ -364,14 +364,22 @@ var lightlyui = function(custom_config) {
 		var action_id = el.getAttribute('lui-action');
 		if (!action_id)
 			return;
+
+		var args = [action_id];
+
 		var raw_data = el.getAttribute('lui-data');
 		var action_data;
 		try {
 			action_data = JSON.parse(raw_data);
+			Array.prototype.push.apply(args,action_data)
 		} catch (err) {
 			action_data = raw_data;
+			args.push(action_data);
 		}
-		customExecuteAction(action_id, action_data);
+
+		console.log(args);
+
+		customExecuteAction.apply(null, args);
 	}
 
 
