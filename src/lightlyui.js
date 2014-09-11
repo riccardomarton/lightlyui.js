@@ -299,7 +299,6 @@ var lightlyui = function(custom_config) {
 					var input_id = el.getAttribute('for');
 					if (input_id) {
 						var input = document.getElementById(input_id);
-						console.log(input);
 						if (input)
 							input.click();
 					} else {
@@ -376,8 +375,6 @@ var lightlyui = function(custom_config) {
 			action_data = raw_data;
 			args.push(action_data);
 		}
-
-		console.log(args);
 
 		customExecuteAction.apply(null, args);
 	}
