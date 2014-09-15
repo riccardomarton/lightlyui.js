@@ -1,0 +1,3 @@
+[submodule "modules/lightlyjs"]
+	path = modules/lightlyjs
+	url = https://github.com/riccardomarton/lightlyjs.git
