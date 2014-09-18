@@ -184,6 +184,11 @@ var lightlyui = function(custom_config) {
 	 * Lightly customizations
 	 */
 	function animateNavigate(page_id) {
+
+		var page = arguments;
+		if (JSON.stringify(page) == JSON.stringify(app.current_page))
+			return false;
+
 		var el = app.newPageElement.apply(null, arguments);
 		var newpage = el.getElementsByClassName('lui-page')[0];
 		var oldpage = document.getElementsByClassName('lui-page')[0];
@@ -203,8 +208,17 @@ var lightlyui = function(custom_config) {
 				triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
 			}, duration );
 		},20);
+
+		console.log(page);
+		console.log(app.current_page);
+		app.current_page = page;
 	}
 	function animateNavigateBack(page_id, vars) {
+
+		var page = arguments;
+		if (JSON.stringify(page) == JSON.stringify(app.current_page))
+			return false;
+
 		var el = app.newPageElement(page_id, vars);
 		var oldpage = el.getElementsByClassName('lui-page')[0];
 		var newpage = document.getElementsByClassName('lui-page')[0];
@@ -225,6 +239,10 @@ var lightlyui = function(custom_config) {
 				triggerEvent(container, "lightlyui-page-hidden", {page: newpage});
 			}, duration );
 		},20);
+
+		console.log(page);
+		console.log(app.current_page);
+		app.current_page = page;
 	}
 
 	function customAddAction(action) {
@@ -432,6 +450,7 @@ var lightlyui = function(custom_config) {
 	return {
 		getConfig: function() { return config; },
 		addAction: customAddAction,
+		current_page: app.current_page,
 		addPage: app.addPage,
 		setHomePage: setHomePage,
 		showLoader: showLoader,
