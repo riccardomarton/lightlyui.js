@@ -185,8 +185,9 @@ var lightlyui = function(custom_config) {
 	 */
 	function animateNavigate(page_id) {
 
-		var page = arguments;
-		if (JSON.stringify(page) == JSON.stringify(app.current_page))
+		var page = JSON.stringify(arguments);
+
+		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
 			return false;
 
 		var el = app.newPageElement.apply(null, arguments);
@@ -208,15 +209,14 @@ var lightlyui = function(custom_config) {
 				triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
 			}, duration );
 		},20);
-
-		console.log(page);
-		console.log(app.current_page);
-		app.current_page = page;
+		
+		app.setCurrentPage(page);
 	}
 	function animateNavigateBack(page_id, vars) {
 
-		var page = arguments;
-		if (JSON.stringify(page) == JSON.stringify(app.current_page))
+		var page = JSON.stringify(arguments);
+
+		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
 			return false;
 
 		var el = app.newPageElement(page_id, vars);
@@ -240,9 +240,8 @@ var lightlyui = function(custom_config) {
 			}, duration );
 		},20);
 
-		console.log(page);
-		console.log(app.current_page);
-		app.current_page = page;
+		
+		app.setCurrentPage(page);
 	}
 
 	function customAddAction(action) {
@@ -450,7 +449,8 @@ var lightlyui = function(custom_config) {
 	return {
 		getConfig: function() { return config; },
 		addAction: customAddAction,
-		current_page: app.current_page,
+		getCurrentPage: app.getCurrentPage,
+		setCurrentPage: app.setCurrentPage,
 		addPage: app.addPage,
 		setHomePage: setHomePage,
 		showLoader: showLoader,
