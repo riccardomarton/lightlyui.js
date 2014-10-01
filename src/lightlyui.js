@@ -1,5 +1,5 @@
 /**
- * Version: 0.3.1
+ * Version: 0.3.2
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -184,7 +184,7 @@ var lightlyui = function(custom_config) {
 	 * Lightly customizations
 	 */
 	function animateNavigate(page_id) {
-
+		var pages = app.getPages();
 		var page = JSON.stringify(arguments);
 
 		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
@@ -209,11 +209,13 @@ var lightlyui = function(custom_config) {
 				triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
 			}, duration );
 		},20);
-		
 		app.setCurrentPage(page);
+
+		if (typeof pages[page_id].callback == "function")
+			pages[page_id].callback.apply(null, args);
 	}
 	function animateNavigateBack(page_id, vars) {
-
+		var pages = app.getPages();
 		var page = JSON.stringify(arguments);
 
 		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
@@ -240,8 +242,10 @@ var lightlyui = function(custom_config) {
 			}, duration );
 		},20);
 
-		
 		app.setCurrentPage(page);
+
+		if (typeof pages[page_id].callback == "function")
+			pages[page_id].callback.apply(null, args);
 	}
 
 	function customAddAction(action) {
