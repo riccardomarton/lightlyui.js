@@ -186,6 +186,7 @@ var lightlyui = function(custom_config) {
 	function animateNavigate(page_id) {
 		var pages = app.getPages();
 		var page = JSON.stringify(arguments);
+		var args = Array.prototype.slice.call(arguments,1);
 
 		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
 			return false;
@@ -217,6 +218,7 @@ var lightlyui = function(custom_config) {
 	function animateNavigateBack(page_id, vars) {
 		var pages = app.getPages();
 		var page = JSON.stringify(arguments);
+		var args = Array.prototype.slice.call(arguments,1);
 
 		if (JSON.stringify(page) == JSON.stringify(app.getCurrentPage()))
 			return false;
