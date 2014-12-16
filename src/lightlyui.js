@@ -12,6 +12,8 @@ var lightlyui = function(custom_config) {
 	var config = {
 		touch: custom_config.touch || true,
 		action_class: custom_config.action_class || 'lui-action',
+		hammer_action_event: custom_config.hammer_action_event || 'tap',
+		hammer_tap_recognizer: custom_config.hammer_tap_recognizer || new Hammer.Tap()
 	}
 
 	var container = document.body;
@@ -32,7 +34,8 @@ var lightlyui = function(custom_config) {
 				message: "Hammer.js not found, be sure to include it before lightlyui or config touch as false"
 			}
 
-		hammer = new Hammer(container);
+		hammer = new Hammer.Manager(container, {});
+		hammer.add(config.hammer_tap_recognizer);
 	}
 
 
@@ -306,7 +309,7 @@ var lightlyui = function(custom_config) {
 		//better touch interaction
 		if (config.touch) {
 
-			hammer.on('tap', function(evt) {
+			hammer.on(config.hammer_action_event, function(evt) {
 				var el = evt.target;
 
 				//blur input if touch away
@@ -360,8 +363,10 @@ var lightlyui = function(custom_config) {
 
 		//lui-action_class
 		if (config.touch) {
-			hammer.on('tap', function(evt) {
+			hammer.on(config.hammer_action_event, function(evt) {
+
 				var el = evt.target;
+
 				while (el != container) {
 					if ( hasClass(el, config.action_class) ) {
 						evt.preventDefault();
@@ -453,6 +458,8 @@ var lightlyui = function(custom_config) {
 	//expose methods
 
 	return {
+		hammer: hammer,
+		
 		getConfig: function() { return config; },
 		addAction: customAddAction,
 		getCurrentPage: app.getCurrentPage,
