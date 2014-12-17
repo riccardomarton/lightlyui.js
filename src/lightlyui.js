@@ -1,5 +1,5 @@
 /**
- * Version: 0.3.2
+ * Version: 0.3.3
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
  * 
  * License: Licensed under The MIT License. See LICENSE file
@@ -12,8 +12,8 @@ var lightlyui = function(custom_config) {
 	var config = {
 		touch: custom_config.touch || true,
 		action_class: custom_config.action_class || 'lui-action',
-		hammer_action_event: custom_config.hammer_action_event || 'tap',
-		hammer_tap_recognizer: custom_config.hammer_tap_recognizer || new Hammer.Tap()
+		hammer: custom_config.hammer || new Hammer(),
+		hammer_action_event: custom_config.hammer_action_event || 'tap'
 	}
 
 	var container = document.body;
@@ -34,8 +34,7 @@ var lightlyui = function(custom_config) {
 				message: "Hammer.js not found, be sure to include it before lightlyui or config touch as false"
 			}
 
-		hammer = new Hammer.Manager(container, {});
-		hammer.add(config.hammer_tap_recognizer);
+		hammer = config.hammer;
 	}
 
 
