@@ -264,8 +264,10 @@ var lightlyui = function(custom_config) {
 
 		var history = app.getHistory();
 
-		if (history.length < 2)
+		if (history.length < 2) {
+			triggerEvent(container, "lightly-action-back-end", {});
 			return;
+		}
 
 		history.pop();
 
