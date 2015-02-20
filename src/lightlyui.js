@@ -13,7 +13,8 @@ var lightlyui = function(custom_config) {
 		touch: custom_config.touch || true,
 		action_class: custom_config.action_class || 'lui-action',
 		hammer: custom_config.hammer || new Hammer(),
-		hammer_action_event: custom_config.hammer_action_event || 'tap'
+		hammer_action_event: custom_config.hammer_action_event || 'tap',
+		outpage_elements: custom_config.outpage_elements || []
 	}
 
 	var container = document.body;
@@ -200,6 +201,14 @@ var lightlyui = function(custom_config) {
 		addClass(newpage, 'lui-notransition');
 		addClass(newpage, 'lui-page-new');
 		container.appendChild(newpage);
+
+		for ( i = 0; i < config.outpage_elements.length; i++) {
+			var op_class = config.outpage_elements[i];
+			var op_el = container.getElementsByClassName(op_class)[0];
+			var new_op_el = el.getElementsByClassName(op_class)[0];
+			op_el.innerHTML = new_op_el.innerHTML;
+		}
+
 		triggerEvent(container, "lightlyui-page-shown", {page: newpage});
 		removeClass(newpage, 'lui-notransition');
 		setTimeout( function() {
