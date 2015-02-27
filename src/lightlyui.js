@@ -35,6 +35,17 @@ var lightlyui = function(custom_config) {
 			}
 
 		hammer = config.hammer;
+
+		hammer.add(new Hammer.Tap({
+			event: 'tap',
+			taps: 1,
+			pointers: 1,
+			taps: 1,
+			interval: 10000,
+			time: 10000,
+			threshold: 100,
+			posThreshold: 10000
+		}));
 	}
 
 
@@ -312,6 +323,7 @@ var lightlyui = function(custom_config) {
 
 			hammer.on(config.hammer_action_event, function(evt) {
 				var el = evt.target;
+				evt.preventDefault();
 
 				//blur input if touch away
 				if (!(['INPUT', 'TEXTAREA'].indexOf(el.nodeName) !== -1) &&
@@ -365,6 +377,7 @@ var lightlyui = function(custom_config) {
 		//lui-action_class
 		if (config.touch) {
 			hammer.on(config.hammer_action_event, function(evt) {
+				evt.preventDefault();
 
 				var el = evt.target;
 
