@@ -77,6 +77,16 @@ var lightlyui = function(custom_config) {
 		history: true
 	});
 	app.addAction({
+		id: 'lui-nohistory-navigate',
+		callback: animateNavigate,
+		history: false
+	});
+	app.addAction({
+		id: 'lui-nohistory-navigateback',
+		callback: animateNavigateBack,
+		history: false
+	});
+	app.addAction({
 		id: 'lui-showpanel',
 		callback: showPanel,
 		history: false
@@ -495,6 +505,9 @@ var lightlyui = function(custom_config) {
 		hidePanel: hidePanel,
 		showDialog: showDialog,
 		hideDialog: hideDialog,
+		navigate: app.navigate,
+		animateNavigate: animateNavigate,
+		animateNavigateBack: animateNavigateBack,
 		getHistory: app.getHistory,
 		executeAction: customExecuteAction,
 		do: customExecuteAction,
