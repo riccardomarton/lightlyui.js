@@ -502,6 +502,7 @@ var lightlyui = function(custom_config) {
 		hasClass: hasClass,
 		addClass: addClass,
 		removeClass: removeClass,
+		triggerEvent: triggerEvent,
 		getTransitionDuration: getTransitionDuration
 	};
 
