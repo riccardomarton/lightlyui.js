@@ -10,7 +10,13 @@ body {
 }
 
 .lui-notransition {
-	transition-duration: 0 !important;
+	transition: none !important;
+	-webkit-transition: none !important;
+}
+
+.lui-transitioning * {
+	transition: none !important;
+	-webkit-transition: none !important;
 }
 
 #lui-loading {

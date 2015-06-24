@@ -230,22 +230,28 @@ var lightlyui = function(custom_config) {
 			op_el.innerHTML = new_op_el.innerHTML;
 		}
 
-		triggerEvent(container, "lightlyui-page-shown", {page: newpage});
-		removeClass(newpage, 'lui-notransition');
 		setTimeout( function() {
-			removeClass(newpage, 'lui-page-new');
-			addClass(oldpage, 'lui-page-old');
+			triggerEvent(container, "lightlyui-page-shown", {page: newpage});
+			removeClass(newpage, 'lui-notransition');
 
-			var duration = getTransitionDuration(oldpage);
-			timer_pagination = setTimeout( function() {
-				container.removeChild(oldpage);
-				triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
-			}, duration );
-		},20);
-		app.setCurrentPage(page);
+			addClass(newpage, 'lui-transitioning');
+			addClass(oldpage, 'lui-transitioning');
+			setTimeout( function() {
+				removeClass(newpage, 'lui-page-new');
+				addClass(oldpage, 'lui-page-old');
 
-		if (typeof pages[page_id].callback == "function")
-			pages[page_id].callback.apply(null, args);
+				var duration = getTransitionDuration(oldpage);
+				timer_pagination = setTimeout( function() {
+					removeClass(newpage, 'lui-transitioning');
+					container.removeChild(oldpage);
+					triggerEvent(container, "lightlyui-page-hidden", {page: oldpage});
+				}, duration );
+			},10);
+			app.setCurrentPage(page);
+
+			if (typeof pages[page_id].callback == "function")
+				pages[page_id].callback.apply(null, args);
+		}, 50);
 	}
 	function animateNavigateBack(page_id, vars) {
 		var pages = app.getPages();
@@ -263,23 +269,36 @@ var lightlyui = function(custom_config) {
 		addClass(oldpage, 'lui-page');
 		addClass(oldpage, 'lui-page-old');
 		container.appendChild(oldpage);
-		triggerEvent(container, "lightlyui-page-shown", {page: oldpage});
-		removeClass(oldpage, 'lui-notransition');
+
+		for ( i = 0; i < config.outpage_elements.length; i++) {
+			var op_class = config.outpage_elements[i];
+			var op_el = container.getElementsByClassName(op_class)[0];
+			var new_op_el = el.getElementsByClassName(op_class)[0];
+			op_el.innerHTML = new_op_el.innerHTML;
+		}
+
 		setTimeout( function() {
-			removeClass(oldpage, 'lui-page-old');
-			addClass(newpage, 'lui-page-new');
+			triggerEvent(container, "lightlyui-page-shown", {page: oldpage});
+			removeClass(oldpage, 'lui-notransition');
+			addClass(newpage, 'lui-transitioning');
+			addClass(oldpage, 'lui-transitioning');
+			setTimeout( function() {
+				removeClass(oldpage, 'lui-page-old');
+				addClass(newpage, 'lui-page-new');
 
-			var duration = getTransitionDuration(newpage);
-			timer_pagination = setTimeout( function() {
-				container.removeChild(newpage);
-				triggerEvent(container, "lightlyui-page-hidden", {page: newpage});
-			}, duration );
-		},20);
+				var duration = getTransitionDuration(newpage);
+				timer_pagination = setTimeout( function() {
+					removeClass(oldpage, 'lui-transitioning');
+					container.removeChild(newpage);
+					triggerEvent(container, "lightlyui-page-hidden", {page: newpage});
+				}, duration );
+			},20);
 
-		app.setCurrentPage(page);
+			app.setCurrentPage(page);
 
-		if (typeof pages[page_id].callback == "function")
-			pages[page_id].callback.apply(null, args);
+			if (typeof pages[page_id].callback == "function")
+				pages[page_id].callback.apply(null, args);
+		}, 50);
 	}
 
 	function customAddAction(action) {
