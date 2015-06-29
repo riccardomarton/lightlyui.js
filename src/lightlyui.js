@@ -1,7 +1,7 @@
 /**
  * Version: 0.3.3
  * Author: Riccardo Marton <marton.riccardo@gmail.com>
- * 
+ *
  * License: Licensed under The MIT License. See LICENSE file
  */
 
@@ -307,7 +307,7 @@ var lightlyui = function(custom_config) {
 				name: "lui-action-forbidden",
 				message: "Cannot overwrite built-in actions"
 			}
-		app.addAction(action); 
+		app.addAction(action);
 	}
 	function customBack() {
 
@@ -361,7 +361,6 @@ var lightlyui = function(custom_config) {
 
 			hammer.on(config.hammer_action_event, function(evt) {
 				var el = evt.target;
-				evt.preventDefault();
 
 				//blur input if touch away
 				if (!(['INPUT', 'TEXTAREA'].indexOf(el.nodeName) !== -1) &&
@@ -372,7 +371,7 @@ var lightlyui = function(custom_config) {
 
 				//chenge input clicking on label
 				if ( el.nodeName == 'LABEL' ) {
-					
+
 					var input_id = el.getAttribute('for');
 					if (input_id) {
 						var input = document.getElementById(input_id);
@@ -385,7 +384,7 @@ var lightlyui = function(custom_config) {
 					}
 				}
 			});
-			
+
 			//add tapped style if touched
 			container.addEventListener( 'touchstart', function(evt) {
 
@@ -415,7 +414,6 @@ var lightlyui = function(custom_config) {
 		//lui-action_class
 		if (config.touch) {
 			hammer.on(config.hammer_action_event, function(evt) {
-				evt.preventDefault();
 
 				var el = evt.target;
 
@@ -497,7 +495,7 @@ var lightlyui = function(custom_config) {
 	function getTransitionDuration(el, with_delay) {
 		var style=window.getComputedStyle(el),
 		    duration = style.webkitTransitionDuration,
-		    delay = style.webkitTransitionDelay; 
+		    delay = style.webkitTransitionDelay;
 
 		duration = (duration.indexOf("ms")>-1) ? parseFloat(duration) : parseFloat(duration)*1000;
 		delay = (delay.indexOf("ms")>-1) ? parseFloat(delay) : parseFloat(delay)*1000;
@@ -511,7 +509,7 @@ var lightlyui = function(custom_config) {
 
 	return {
 		hammer: hammer,
-		
+
 		getConfig: function() { return config; },
 		addAction: customAddAction,
 		getCurrentPage: app.getCurrentPage,
