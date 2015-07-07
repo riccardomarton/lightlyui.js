@@ -15,7 +15,7 @@ var lightlyui = function(custom_config) {
 		hammer: custom_config.hammer || new Hammer(),
 		hammer_action_event: custom_config.hammer_action_event || 'tap',
 		outpage_elements: custom_config.outpage_elements || []
-	}
+	};
 
 	var container = document.body;
 
@@ -24,7 +24,7 @@ var lightlyui = function(custom_config) {
 		throw {
 			name: "lightlyui-dependency-missing",
 			message: "lightly.js not found, be sure to include it before lightlyui"
-		}
+		};
 	}
 
 	//check hammer dependency
@@ -33,7 +33,7 @@ var lightlyui = function(custom_config) {
 			throw {
 				name: "lightlyui-dependency-missing",
 				message: "Hammer.js not found, be sure to include it before lightlyui or config touch as false"
-			}
+			};
 
 		hammer = config.hammer;
 
@@ -41,7 +41,6 @@ var lightlyui = function(custom_config) {
 			event: 'tap',
 			taps: 1,
 			pointers: 1,
-			taps: 1,
 			interval: 10000,
 			time: 10000,
 			threshold: 100,
@@ -63,7 +62,7 @@ var lightlyui = function(custom_config) {
 		"loader": 	"lui-loading",
 		"panel": 	"lui-panel",
 		"dialog":  	"lui-dialog"
-	}
+	};
 
 	//set built-in actions
 	app.addAction({
@@ -192,7 +191,7 @@ var lightlyui = function(custom_config) {
 			throw {
 				name: "lightly-page-nonexistant",
 				message: "Page "+page_id+" does not exist"
-			}
+			};
 
 		var history = app.getHistory();
 		history.push({
@@ -306,7 +305,7 @@ var lightlyui = function(custom_config) {
 			throw {
 				name: "lui-action-forbidden",
 				message: "Cannot overwrite built-in actions"
-			}
+			};
 		app.addAction(action);
 	}
 	function customBack() {
@@ -363,7 +362,7 @@ var lightlyui = function(custom_config) {
 				var el = evt.target;
 
 				//blur input if touch away
-				if (!(['INPUT', 'TEXTAREA'].indexOf(el.nodeName) !== -1) &&
+				if ((['INPUT', 'TEXTAREA'].indexOf(el.nodeName) < 0) &&
 					(['INPUT', 'TEXTAREA'].indexOf(document.activeElement.nodeName) !== -1)) {
 					document.activeElement.blur();
 				}
@@ -371,14 +370,14 @@ var lightlyui = function(custom_config) {
 
 				//chenge input clicking on label
 				if ( el.nodeName == 'LABEL' ) {
-
+					var input;
 					var input_id = el.getAttribute('for');
 					if (input_id) {
-						var input = document.getElementById(input_id);
+						input = document.getElementById(input_id);
 						if (input)
 							input.click();
 					} else {
-						var input = el.getElementsByTagName('INPUT');
+						input = el.getElementsByTagName('INPUT');
 						if (input[0])
 							input[0].click();
 					}
@@ -401,6 +400,7 @@ var lightlyui = function(custom_config) {
 			container.addEventListener( 'touchend', function(evt) {
 				var el = evt.target;
 				while (el != container) {
+					if (el === null) return;
 					if ( hasClass(el, config.action_class) ) {
 						removeClass(el, 'lui-touched');
 						return;
@@ -416,8 +416,8 @@ var lightlyui = function(custom_config) {
 			hammer.on(config.hammer_action_event, function(evt) {
 
 				var el = evt.target;
-
 				while (el != container) {
+					if (el === null) return;
 					if ( hasClass(el, config.action_class) ) {
 						evt.preventDefault();
 						onClickActionClass(el);
@@ -448,7 +448,7 @@ var lightlyui = function(custom_config) {
 		var action_data;
 		try {
 			action_data = JSON.parse(raw_data);
-			Array.prototype.push.apply(args,action_data)
+			Array.prototype.push.apply(args,action_data);
 		} catch (err) {
 			action_data = raw_data;
 			args.push(action_data);
@@ -490,7 +490,10 @@ var lightlyui = function(custom_config) {
 		elem.className = elem.className +" "+newclass;
 	}
 	function hasClass(elem, checkclass) {
-		    return new RegExp('(\\s|^)' + checkclass + '(\\s|$)').test(elem.className);
+		if (elem === undefined || elem === null || elem.className === undefined)
+			return false;
+
+		return new RegExp('(\\s|^)' + checkclass + '(\\s|$)').test(elem.className);
 	}
 	function getTransitionDuration(el, with_delay) {
 		var style=window.getComputedStyle(el),
@@ -533,7 +536,9 @@ var lightlyui = function(custom_config) {
 		addClass: addClass,
 		removeClass: removeClass,
 		triggerEvent: triggerEvent,
-		getTransitionDuration: getTransitionDuration
+		getTransitionDuration: getTransitionDuration,
+
+		lightly: app
 	};
 
-}
+};
