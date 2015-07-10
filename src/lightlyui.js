@@ -361,6 +361,8 @@ var lightlyui = function(custom_config) {
 			hammer.on(config.hammer_action_event, function(evt) {
 				var el = evt.target;
 
+				if (el.hasAttribute('lui-ignore')) return;
+
 				//blur input if touch away
 				if ((['INPUT', 'TEXTAREA'].indexOf(el.nodeName) < 0) &&
 					(['INPUT', 'TEXTAREA'].indexOf(document.activeElement.nodeName) !== -1)) {
@@ -389,6 +391,9 @@ var lightlyui = function(custom_config) {
 
 				var el = evt.target;
 				while (el && el != container) {
+
+					if (el.hasAttribute('lui-ignore')) return;
+
 					if ( hasClass(el, config.action_class) ) {
 						addClass(el, 'lui-touched');
 						return;
@@ -400,6 +405,9 @@ var lightlyui = function(custom_config) {
 			container.addEventListener( 'touchend', function(evt) {
 				var el = evt.target;
 				while (el != container) {
+
+					if (el.hasAttribute('lui-ignore')) return;
+
 					if (el === null) return;
 					if ( hasClass(el, config.action_class) ) {
 						removeClass(el, 'lui-touched');
@@ -417,6 +425,9 @@ var lightlyui = function(custom_config) {
 
 				var el = evt.target;
 				while (el != container) {
+
+					if (el.hasAttribute('lui-ignore')) return;
+
 					if (el === null) return;
 					if ( hasClass(el, config.action_class) ) {
 						evt.preventDefault();
