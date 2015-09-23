@@ -368,22 +368,7 @@ var lightlyui = function(custom_config) {
 					(['INPUT', 'TEXTAREA'].indexOf(document.activeElement.nodeName) !== -1)) {
 					document.activeElement.blur();
 				}
-
-
-				//chenge input clicking on label
-				if ( el.nodeName == 'LABEL' ) {
-					var input;
-					var input_id = el.getAttribute('for');
-					if (input_id) {
-						input = document.getElementById(input_id);
-						if (input)
-							input.click();
-					} else {
-						input = el.getElementsByTagName('INPUT');
-						if (input[0])
-							input[0].click();
-					}
-				}
+				
 			});
 
 			//add tapped style if touched
